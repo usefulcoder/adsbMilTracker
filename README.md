@@ -26,7 +26,9 @@
 `sudo apt update`
 
 6. Install dump1090-fa
-> ```sudo apt install dump1090-fa```
+```
+sudo apt install dump1090-fa
+```
 
 7. **IMPORTANT: REBOOT THE PI** 
 `sudo reboot`
