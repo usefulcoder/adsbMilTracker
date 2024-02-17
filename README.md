@@ -12,7 +12,7 @@
 
 2. Add piaware repository 
 *Credit to Wiedehopf for this script*
-`wget -O piaware.deb http://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb`
+`\n wget -O piaware.deb http://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb`
 
 3. DPKG piaware repo
 `sudo dpkg -i piaware.deb`
