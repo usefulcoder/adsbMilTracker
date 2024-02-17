@@ -10,9 +10,9 @@
 **This may take some time.**
 `sudo apt update && sudo apt upgrade`
 
-2. Add piaware repository 
-*Credit to Wiedehopf for this script*
-`\n wget -O piaware.deb http://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb`
+2. Add piaware repository\
+*Credit to Wiedehopf for this script*\
+`wget -O piaware.deb http://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb`
 
 3. DPKG piaware repo
 `sudo dpkg -i piaware.deb`
@@ -26,7 +26,7 @@
 `sudo apt update`
 
 6. Install dump1090-fa
-`sudo apt install dump1090-fa`
+```sudo apt install dump1090-fa```
 
 7. **IMPORTANT: REBOOT THE PI** 
 `sudo reboot`
