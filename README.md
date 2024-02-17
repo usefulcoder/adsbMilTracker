@@ -7,13 +7,13 @@
 0. Plug in SDR into the Pi, and connect it to your 1090MHz antenna.
 
 1.  Update and Upgrade Pi.
-**This may take some time.**\
+**This may take some time.**
 ```
 sudo apt update && sudo apt upgrade
 ```
 
 2. Add piaware repository\
-*Credit to Wiedehopf for this script* \
+*Credit to Wiedehopf for this script* 
 ```
     wget -O piaware.deb http://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb
 ```
