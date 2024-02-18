@@ -180,7 +180,7 @@ MODEL: {name}\n
 """
                     if interface:
                         interface.sendText(message, channelIndex=meshtastic_channel_index)
-                        time.sleep(1)
+                        
                     # 
                     # interface.sendText(f'HEX -> {seen}', channelIndex=2)
                     # time.sleep(0.5)
