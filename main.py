@@ -14,7 +14,7 @@ try:
 except:
     interface = False
 aircraft_db = ""
-print(discord_webhook)
+
 with open(f"{os.getenv('HOME')}/adsbMilTracker/aircraft.json") as aircraft:
     aircraft_db = json.loads(aircraft.read())
 flag_dict = {
@@ -58,7 +58,7 @@ def mil_plane_found(plane,hex):
             short = plane["shortName"]
             name = plane["name"]
 
-            message = f"MIL..AIRCRAFT..LOST..->..HEX:..{seen},..MODEL..->..{name}...END..MESSAGE..."
+            message = f"MIL..AIRCRAFT..RECEIVED..->..HEX:..{seen},..MODEL..->..{name}...END..MESSAGE..."
             interface.sendText(message, channelIndex=meshtastic_channel_index)
             time.sleep(1)
 errors_since_last_success = 0
@@ -161,7 +161,7 @@ while True:
                     
                     message = f"MIL..AIRCRAFT..LOST..->..HEX:..{seen},..MODEL..->..{name}...END..MESSAGE..."
                     if interface:
-                        interface.sendText(message, channelIndex=2)
+                        interface.sendText(message, channelIndex=meshtastic_channel_index)
                         time.sleep(1)
                     # 
                     # interface.sendText(f'HEX -> {seen}', channelIndex=2)
@@ -181,7 +181,7 @@ while True:
                     
                     message = f"MIL..AIRCRAFT..LOST..->..HEX:..{seen},..MODEL..->..{name}...END..MESSAGE..."
                     if interface:
-                        interface.sendText(message, channelIndex=2)
+                        interface.sendText(message, channelIndex=meshtastic_channel_index)
                         time.sleep(1)
 
         time.sleep(5)
