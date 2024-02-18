@@ -48,7 +48,7 @@ def mil_plane_found(plane,hex):
         short = plane["shortName"]
         name = plane["name"].replace(" ", "")
                     
-        message = f"MIL..AIRCRAFT..RECEIVED..->..HEX:..{seen},..MODEL..->..{name}...END..MESSAGE..."
+        message = f"MIL..AIRCRAFT..RECEIVED..->..HEX:..{hex},..MODEL..->..{name}...END..MESSAGE..."
         if interface:
             interface.sendText(message, channelIndex=meshtastic_channel_index)
             time.sleep(1)
@@ -58,7 +58,7 @@ def mil_plane_found(plane,hex):
             short = plane["shortName"]
             name = plane["name"]
 
-            message = f"MIL..AIRCRAFT..RECEIVED..->..HEX:..{seen},..MODEL..->..{name}...END..MESSAGE..."
+            message = f"MIL..AIRCRAFT..RECEIVED..->..HEX:..{hex},..MODEL..->..{name}...END..MESSAGE..."
             interface.sendText(message, channelIndex=meshtastic_channel_index)
             time.sleep(1)
 errors_since_last_success = 0
