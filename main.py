@@ -58,7 +58,8 @@ def mil_plane_found(plane,hex):
         if interface:
             interface.sendText(message, channelIndex=meshtastic_channel_index)
             time.sleep(1)
-    except:
+    except Exception as e:
+        print(e)
         if interface:
             reg = plane["registration"]
             short = plane["shortName"]
@@ -191,7 +192,8 @@ while True:
                     # time.sleep(0.5)
                     
                     
-                except:
+                except Exception as e:
+                    print(e)
                     reg = plane["registration"]
                     short = plane["shortName"]
                     name = plane["name"]
