@@ -58,9 +58,9 @@ sudo apt update && sudo apt upgrade
 
 ## milTracker install and setup
 
-1. ensure that git is installed on your raspberry pi:
+1. ensure that dependencies are installed on your raspberry pi:
     ```
-    sudo apt install git
+    sudo apt install git python3-pip python3-full python-is-python3 && pip install meshtastic --break-system-packages
     ```
 
 2. install the base repository that includes the program, the aircraft database, and configuration.

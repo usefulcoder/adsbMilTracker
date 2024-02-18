@@ -14,6 +14,7 @@ try:
 except:
     interface = False
 aircraft_db = ""
+print(discord_webhook)
 with open(f"{os.getenv('HOME')}/adsbMilTracker/aircraft.json") as aircraft:
     aircraft_db = json.loads(aircraft.read())
 flag_dict = {
@@ -67,7 +68,6 @@ while True:
         
         try:
             json_data = requests.get("http://localhost/tar1090/data/aircraft.json").json()
-            print(json_data)
         except:
             continue
         
