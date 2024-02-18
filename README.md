@@ -120,7 +120,7 @@ sudo apt update && sudo apt upgrade
 
 6. The output of the above command should show the status of the service and it should say **active(running)**
 
-
+# ALL SET! If you followed the above, you should be good to go and should be actively listening for mil aircraft. The below is only for convenience on any future installs.
 ## EASY TO COPY CODE BLOCKS
 
 ```
