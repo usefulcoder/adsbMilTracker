@@ -124,13 +124,10 @@ sudo apt update && sudo apt upgrade
 ## EASY TO COPY CODE BLOCKS
 
 ```
-sudo apt update && sudo apt upgrade && wget -O piaware.deb http://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb && sudo dpkg -i piaware.deb
+sudo apt update && sudo apt upgrade && wget -O piaware.deb http://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb && sudo dpkg -i piaware.deb && sudo nano /etc/apt/sources.list
 ```
 
-```
-sudo nano /etc/apt/sources.list
-```
-Paste this into the file: deb http://deb.debian.org/debian buster main contrib non-free
+Paste this into the file that pulls up on a new line: deb http://deb.debian.org/debian buster main contrib non-free
 
 ```
 sudo apt update && sudo apt install dump1090-fa && sudo reboot
