@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 import subprocess
 import os
-from configuration import path_to_aircraft_json, meshtastic_channel_index, discord_webhook, discord_error_webhook
+from configuration import meshtastic_channel_index, discord_webhook, discord_error_webhook
 # import meshtastic
 # import meshtastic.serial_interface
 

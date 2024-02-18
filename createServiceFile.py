@@ -9,7 +9,7 @@ with open(f"./adsbMilTracker.service", "a") as service_file:
     service_file.write("\n[Service]")
     service_file.write("\nType=simple")
     service_file.write(f"\nExecStart=python {home_folder}/adsbMilTracker/main.py")
-    service_file.write(f"\nUser={home_folder.split("/")[2]}")
+    service_file.write(f"\nUser={home_folder.split('/')[2]}")
     service_file.write("\nTimeoutStartSec=infinity")
     service_file.write("\n")
     service_file.write("\n[Install]")
