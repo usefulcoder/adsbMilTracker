@@ -29,7 +29,7 @@ sudo apt update && sudo apt upgrade
     ```
     - paste this on a new line in the sources.list file
     ```
-deb http://deb.debian.org/debian buster main contrib non-free
+    deb http://deb.debian.org/debian buster main contrib non-free
     ```
 
 5. update your repos
