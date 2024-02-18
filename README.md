@@ -100,12 +100,11 @@ sudo apt update && sudo apt upgrade
     ```
 2. Give folder edit permissions and Create service file
     ```
-    chmod 777 ../adsbMilTracker
-    sudo python createServiceFile.py
+    sudo chmod -R 777 ../adsbMilTracker && python createServiceFile.py 
     ```
 3. Move service file into systemd
     ```
-    mv ./adsbMilTracker.service /etc/systemd/system/adsbMilTracker.service
+    sudo mv ./adsbMilTracker.service /etc/systemd/system/adsbMilTracker.service
     ```
 
 4. Reload the service daemon

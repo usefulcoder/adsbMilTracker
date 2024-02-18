@@ -5,8 +5,8 @@ from datetime import datetime
 import subprocess
 import os
 from configuration import meshtastic_channel_index, discord_webhook, discord_error_webhook
-# import meshtastic
-# import meshtastic.serial_interface
+import meshtastic
+import meshtastic.serial_interface
 
 
 try:    
@@ -67,6 +67,7 @@ while True:
         
         try:
             json_data = requests.get("http://localhost/tar1090/data/aircraft.json").json()
+            print(json_data)
         except:
             continue
         
