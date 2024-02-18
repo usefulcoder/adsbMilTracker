@@ -114,7 +114,7 @@ sudo apt update && sudo apt upgrade
 
 5. Enable the service
     ```
-    sudo systemctl enable adsbMilTracker.service && sudo systemctl status
+    sudo systemctl enable adsbMilTracker.service && sudo systemctl start adsbMilTracker && sudo systemctl status adsbMilTracker
     ```
 
 6. The output of the above command should show the status of the service and it should say **active(running)**
