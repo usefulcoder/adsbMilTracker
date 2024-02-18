@@ -171,12 +171,12 @@ while True:
                     short = plane["shortName"]
                     name = plane["name"].replace(" ", "")
                     message = f"""
-..AIRCRAFT..LOST..\n
-MODEL: {name}\n
- HEX: {seen}\n
- REG: {reg}\n
-..END..MESSAGE...
-"""
+                    ..AIRCRAFT..LOST..\n
+                    MODEL: {name}\n
+                     HEX: {seen}\n
+                     REG: {reg}\n
+                    ..END..MESSAGE...
+                    """
                     if interface:
                         interface.sendText(message, channelIndex=meshtastic_channel_index)
                         time.sleep(1)
@@ -197,12 +197,12 @@ MODEL: {name}\n
                     name = plane["name"]
                     
                     message = f"""
-..AIRCRAFT..LOST..\n
-MODEL: {name}\n
- HEX: {seen}\n
- REG: {reg}\n
-..END..MESSAGE...
-"""
+                    ..AIRCRAFT..LOST..\n
+                    MODEL: {name}\n
+                     HEX: {seen}\n
+                     REG: {reg}\n
+                    ..END..MESSAGE...
+                    """
                     if interface:
                         interface.sendText(message, channelIndex=meshtastic_channel_index)
                         time.sleep(1)
