@@ -3,6 +3,7 @@ import requests
 import time
 from datetime import datetime
 import subprocess
+import os
 from configuration import path_to_aircraft_json, meshtastic_channel_index, discord_webhook, discord_error_webhook
 # import meshtastic
 # import meshtastic.serial_interface
@@ -13,7 +14,7 @@ try:
 except:
     interface = False
 aircraft_db = ""
-with open(f"{path_to_aircraft_json}/aircraft.json") as aircraft:
+with open(f"{os.getenv('HOME')}/adsbMilTracker/aircraft.json") as aircraft:
     aircraft_db = json.loads(aircraft.read())
 flag_dict = {
             "1" : "Military Aircraft Received!",
