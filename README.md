@@ -59,6 +59,7 @@ sudo apt update && sudo apt upgrade
 ## milTracker install and setup
 
 1. ensure that dependencies are installed on your raspberry pi:
+    - This may appear to freeze or stop at times. More than likely it is working, it just takes a while to install.
     ```
     sudo apt install git python3-pip python3-full python-is-python3 && pip install meshtastic --break-system-packages
     ```
@@ -71,9 +72,9 @@ sudo apt update && sudo apt upgrade
 
 3. setup the configuration file:
     1. navigate to the new adsbMilTracker directory
-    ```
-    cd adsbMilTracker
-    ```
+        ```
+        cd adsbMilTracker
+        ```
     2. Edit the configuration.py
          ```
         sudo nano configuration.py
@@ -123,10 +124,7 @@ sudo apt update && sudo apt upgrade
 ## EASY TO COPY CODE BLOCKS
 
 ```
-sudo apt update && sudo apt upgrade
-wget -O piaware.deb http://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb
-sudo dpkg -i piaware.deb
-sudo dpkg -i piaware.deb
+sudo apt update && sudo apt upgrade && wget -O piaware.deb http://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb && sudo dpkg -i piaware.deb
 ```
 
 ```
@@ -135,17 +133,11 @@ sudo nano /etc/apt/sources.list
 Paste this into the file: deb http://deb.debian.org/debian buster main contrib non-free
 
 ```
-sudo apt update
-sudo apt install dump1090-fa
-sudo reboot
+sudo apt update && sudo apt install dump1090-fa && sudo reboot
 ```
 
 ```
-sudo bash -c "$(wget -nv -O - https://github.com/wiedehopf/tar1090/raw/master/install.sh)"
-sudo apt install git python3-pip python3-full python-is-python3 && pip install meshtastic --break-system-packages
-cd ~
-git clone https://github.com/usefulcoder/adsbMilTracker.git
-cd adsbMilTracker
+sudo bash -c "$(wget -nv -O - https://github.com/wiedehopf/tar1090/raw/master/install.sh)" && sudo apt install git python3-pip python3-full python-is-python3 && pip install meshtastic --break-system-packages && cd ~ && git clone https://github.com/usefulcoder/adsbMilTracker.git && cd adsbMilTracker
 ```
 Add your configs as stated inthe format in the explanations above
 ```
@@ -153,9 +145,5 @@ sudo nano configuration.py
 ```
 
 ```
-cd ~/adsbMilTracker
-sudo chmod -R 777 ../adsbMilTracker && python createServiceFile.py 
-sudo mv ./adsbMilTracker.service /etc/systemd/system/adsbMilTracker.service
-sudo systemctl daemon-reload
-sudo systemctl enable adsbMilTracker.service && sudo systemctl start adsbMilTracker && sudo systemctl status adsbMilTracker
+cd ~/adsbMilTracker && sudo chmod -R 777 ../adsbMilTracker && python createServiceFile.py && sudo mv ./adsbMilTracker.service /etc/systemd/system/adsbMilTracker.service && sudo systemctl daemon-reload && sudo systemctl enable adsbMilTracker.service && sudo systemctl start adsbMilTracker && sudo systemctl status adsbMilTracker
 ```
