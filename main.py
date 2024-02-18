@@ -48,7 +48,13 @@ def mil_plane_found(plane,hex):
         short = plane["shortName"]
         name = plane["name"].replace(" ", "")
                     
-        message = f"MIL..AIRCRAFT..RECEIVED..->..HEX:..{hex},..MODEL..->..{name}...END..MESSAGE..."
+        message = f"""
+..AIRCRAFT..RECEIVED..\n
+MODEL: {name}\n
+ HEX: {hex}\n
+ REG: {reg}\n
+..END..MESSAGE...
+"""
         if interface:
             interface.sendText(message, channelIndex=meshtastic_channel_index)
             time.sleep(1)
@@ -58,7 +64,13 @@ def mil_plane_found(plane,hex):
             short = plane["shortName"]
             name = plane["name"]
 
-            message = f"MIL..AIRCRAFT..RECEIVED..->..HEX:..{hex},..MODEL..->..{name}...END..MESSAGE..."
+           message = f"""
+..AIRCRAFT..RECEIVED..\n
+MODEL: {name}\n
+ HEX: {hex}\n
+ REG: {reg}\n
+..END..MESSAGE...
+"""
             interface.sendText(message, channelIndex=meshtastic_channel_index)
             time.sleep(1)
 errors_since_last_success = 0
@@ -158,8 +170,13 @@ while True:
                     reg = plane["registration"]
                     short = plane["shortName"]
                     name = plane["name"].replace(" ", "")
-                    
-                    message = f"MIL..AIRCRAFT..LOST..->..HEX:..{seen},..MODEL..->..{name}...END..MESSAGE..."
+                    message = f"""
+..AIRCRAFT..LOST..\n
+MODEL: {name}\n
+ HEX: {seen}\n
+ REG: {reg}\n
+..END..MESSAGE...
+"""
                     if interface:
                         interface.sendText(message, channelIndex=meshtastic_channel_index)
                         time.sleep(1)
@@ -179,7 +196,13 @@ while True:
                     short = plane["shortName"]
                     name = plane["name"]
                     
-                    message = f"MIL..AIRCRAFT..LOST..->..HEX:..{seen},..MODEL..->..{name}...END..MESSAGE..."
+                    message = f"""
+..AIRCRAFT..LOST..\n
+MODEL: {name}\n
+ HEX: {seen}\n
+ REG: {reg}\n
+..END..MESSAGE...
+"""
                     if interface:
                         interface.sendText(message, channelIndex=meshtastic_channel_index)
                         time.sleep(1)
