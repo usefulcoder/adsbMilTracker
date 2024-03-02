@@ -1,244 +1,144 @@
 import json
 import requests
 import time
-from datetime import datetime
+import datetime
 import subprocess
 import os
 from configuration import meshtastic_channel_index, discord_webhook, discord_error_webhook
 import meshtastic
 import meshtastic.serial_interface
 
-
 try:    
     interface = meshtastic.serial_interface.SerialInterface()
 except:
     interface = False
-aircraft_db = ""
 
-with open(f"{os.getenv('HOME')}/adsbMilTracker/aircraft.json") as aircraft:
-    aircraft_db = json.loads(aircraft.read())
+aircraft_db = {}
+
+with open(f"{os.getenv('HOME')}/adsbMilTracker/aircraft.json") as aircraft_file:
+    aircraft_db = json.load(aircraft_file)
+
 flag_dict = {
-            "1" : "Military Aircraft Received!",
-            "2" : "Aircraft Marked 'Interesting' Received!",
-            "4" : "PIA Aircraft Received!",
-            "8" : "LADD Aircraft Received!"
-        }
+    "1": "Military Aircraft Received!",
+    "2": "Aircraft Marked 'Interesting' Received!",
+    "4": "PIA Aircraft Received!",
+    "8": "LADD Aircraft Received!"
+}
 already_seen = ["AE0406"]
 daily_hex = []
 sent_daily = False
-def mil_plane_found(plane,hex):
-    
-    try:
-        send_message = requests.post(discord_webhook, json={"embeds" : [
-        {
-            "title" : "MILITARY PLANE RECEPTION CONFIRMED",
-            "description" : f'''
-            ... HEX -> {hex}...
-            ...REG -> {plane["registration"]}...
-            ...SHORTNAME -> {plane["shortName"]}...
-            ...MODEL -> {plane["name"]}...
-            ...END RECEPTION MESSAGE...
-        ''',
-            "color" : "6750003"
-        }
-    ]})
 
-        
-        reg = plane["registration"]
-        short = plane["shortName"]
-        name = plane["name"].replace(" ", "")
-                    
-        message = f"""
-..AIRCRAFT..RECEIVED..\n
-MODEL: {name}\n
- HEX: {hex}\n
- REG: {reg}\n
-..END..MESSAGE...
-"""
+def send_discord_message(title, description, color):
+    try:
+        send_message = requests.post(discord_webhook, json={"embeds": [
+            {
+                "title": title,
+                "description": description,
+                "color": color
+            }
+        ]})
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
+def send_interface_message(message):
+    try:
         if interface:
             interface.sendText(message, channelIndex=meshtastic_channel_index)
             time.sleep(1)
     except Exception as e:
         print(e)
-        if interface:
-            reg = plane["registration"]
-            short = plane["shortName"]
-            name = plane["name"]
 
-            message = f"""
-..AIRCRAFT..RECEIVED..\n
-MODEL: {name}\n
- HEX: {hex}\n
- REG: {reg}\n
-..END..MESSAGE...
-"""
-            interface.sendText(message, channelIndex=meshtastic_channel_index)
-            time.sleep(1)
-errors_since_last_success = 0
-while True:
-    
+def mil_plane_found(plane, hex_code):
     try:
-        
+        send_discord_message("MILITARY PLANE RECEPTION CONFIRMED",
+                             f'''HEX -> {hex_code}\nREG -> {plane["registration"]}\nSHORTNAME -> {plane["shortName"]}\nMODEL -> {plane["name"]}''',
+                             "6750003")
+        message = f'''AIRCRAFT RECEIVED\nMODEL: {plane["name"].replace(" ", "")}\nHEX: {hex_code}\nREG: {plane["registration"]}'''
+        send_interface_message(message)
+    except Exception as e:
+        print(e)
+        send_interface_message(f'''AIRCRAFT RECEIVED\nMODEL: {plane["name"]}\nHEX: {hex_code}\nREG: {plane["registration"]}''')
+
+errors_since_last_success = 0
+
+while True:
+    try:
         try:
             json_data = requests.get("http://localhost/tar1090/data/aircraft.json").json()
-        except:
+        except Exception:
             continue
-        
-        hex_list = [item["hex"].upper() for item in json_data["aircraft"] ]
+
+        hex_list = [item["hex"].upper() for item in json_data["aircraft"]]
 
         for airframe in json_data["aircraft"]:
-            hasFlags = False
-            hasEmergency = False
             hasLat = False
-            try:
-                if airframe['dbFlags']:
-                    hasFlags = True
-            except:
-                None 
-            try:
-                if airframe["emergency"]:
-                    hasEmergency = True
-            except:
-                None
             try:
                 if airframe["lat"]:
                     hasLat = True
             except:
-                None
-            
-            # if hasFlags:
-            #     print(flag_dict[str(airframe['dbFlags'])])
-            
-            # if hasEmergency:
-            #     if airframe['emergency'] != "none":
-            #         print("airframe emergency")
-            
-            # if not hasFlags and not hasEmergency:
-            #     print("no weird aircraft")
+                pass
+
             if hasLat:
-                
                 if type(float(airframe["lat"])) != float:
-                    
                     try:
                         plane = aircraft_db[airframe["hex"].upper()]
-                        if plane["code"] == "10":
-                        
-                            if not airframe["hex"].upper() in already_seen:
-                                mil_plane_found(plane, airframe["hex"].upper())
-                                already_seen.append(airframe["hex"].upper())
-                                if airframe["hex"].upper() not in daily_hex:
-                                    daily_hex.append(airframe["hex"].upper())
-
-                            
-                        
-                    except Exception as e:
-                        None
+                        if plane["code"] == "10" and airframe["hex"].upper() not in already_seen:
+                            mil_plane_found(plane, airframe["hex"].upper())
+                            already_seen.append(airframe["hex"].upper())
+                            if airframe["hex"].upper() not in daily_hex:
+                                daily_hex.append(airframe["hex"].upper())
+                    except:
+                        pass
             else:
                 try:
-                        
-                        plane = aircraft_db[airframe["hex"].upper()]
-                        if plane["code"] == "10":
-                            if not airframe["hex"].upper() in already_seen:
-                                mil_plane_found(plane, airframe["hex"].upper())
-                                already_seen.append(airframe["hex"].upper())
-                                if airframe["hex"].upper() not in daily_hex:
-                                    daily_hex.append(airframe["hex"].upper())
+                    plane = aircraft_db[airframe["hex"].upper()]
+                    if plane["code"] == "10" and airframe["hex"].upper() not in already_seen:
+                        mil_plane_found(plane, airframe["hex"].upper())
+                        already_seen.append(airframe["hex"].upper())
+                        if airframe["hex"].upper() not in daily_hex:
+                            daily_hex.append(airframe["hex"].upper())
+                except:
+                    pass
 
-                            
-                        
-                except Exception as e:
-                    None
-        
-        for seen in already_seen:
+        for seen in already_seen[:]:
             if seen not in hex_list:
                 plane = aircraft_db[seen]
                 already_seen.remove(seen)
-                message =""
-                try:
-                    send_message = requests.post(discord_webhook, json={'content' : message,"embeds" : [
-        {
-            "title" : "MILITARY PLANE RECEPTION LOST",
-            "description" : f'''
-            ... HEX -> {seen}...
-            ...REG -> {plane["registration"]}...
-            ...SHORTNAME -> {plane["shortName"]}...
-            ...MODEL -> {plane["name"]}...
-            ...END RECEPTION MESSAGE...
-        ''',
-            "color" : "16711680"
-        }
-    ]})
-                    reg = plane["registration"]
-                    short = plane["shortName"]
-                    name = plane["name"].replace(" ", "")
-                    message = f"""
-..AIRCRAFT..LOST..\n
-MODEL: {name}\n
- HEX: {seen}\n
- REG: {reg}\n
-..END..MESSAGE...
-"""
-                    if interface:
-                        interface.sendText(message, channelIndex=meshtastic_channel_index)
-                        
-                    # 
-                    # interface.sendText(f'HEX -> {seen}', channelIndex=2)
-                    # time.sleep(0.5)
-                    # interface.sendText(f'REG -> {reg}', channelIndex=2)
-                    # time.sleep(0.5)
-                    # interface.sendText(f'SHORTNAME -> {short}', channelIndex=2)
-                    # time.sleep(0.5)
-                    # interface.sendText(f'.MODEL -> {name}', channelIndex=2)
-                    # time.sleep(0.5)
-                    
-                    
-                except Exception as e:
-                    print(e)
-                    reg = plane["registration"]
-                    short = plane["shortName"]
-                    name = plane["name"]
-                    
-                    message = f"""
-..AIRCRAFT..LOST..\n
-MODEL: {name}\n
- HEX: {seen}\n
- REG: {reg}\n
-..END..MESSAGE...
-"""
-                    if interface:
-                        interface.sendText(message, channelIndex=meshtastic_channel_index)
-                        time.sleep(1)
+                message = f'''AIRCRAFT LOST\nMODEL: {plane["name"].replace(" ", "")}\nHEX: {seen}\nREG: {plane["registration"]}'''
+                send_interface_message(message)
+                send_discord_message("MILITARY PLANE RECEPTION LOST",
+                                     f'''HEX -> {seen}\nREG -> {plane["registration"]}\nSHORTNAME -> {plane["shortName"]}\nMODEL -> {plane["name"]}''',
+                                     "16711680")
 
         time.sleep(5)
-        if datetime.now().strftime("%H:%M") == "22:00" and not sent_daily:
-            send_message = requests.post(discord_webhook, json={"embeds" : [
-                {
-                    "title" : "DAILY MILITARY PLANE COUNT",
-                    "description" : f'''
-                    There were {len(daily_hex)} unique military aircraft seen today.
-                ''',
-                    "color" : "6750003"
-                }
-                   ]})
+
+        start_time = datetime.time(22, 0, 0)
+        end_time = datetime.time(22, 15, 0)
+        if start_time <= datetime.datetime.now().time() <= end_time and not sent_daily:
+            try:
+                send_discord_message("DAILY MILITARY PLANE COUNT",
+                                     f'''There were {len(daily_hex)} unique military aircraft seen today.''',
+                                     "6750003")
+            except:
+                pass
+
+            if interface:
+                message = f"DAILY MILITARY PLANE COUNT: {len(daily_hex)}"
+                send_interface_message(message)
+                
             daily_hex = []
             sent_daily = True
+
         errors_since_last_success = 0
-        
-        if datetime.now().strftime("%H:%M") != "22:00" and sent_daily:
-            sent_daily == False
+
+        if datetime.datetime.now().time() > end_time and sent_daily:
+            sent_daily = False
     except Exception as e:
-        error_msg = f"""
-        ...AN ERROR OCCURRED WITHIN THE ADSBTRACKER ON UBUNTUSERVER...
-        ERROR: {e}
-        """
-        requests.post(discord_error_webhook, json={"content" : error_msg})
+        error_msg = f'''AN ERROR OCCURRED WITHIN THE ADSBTRACKER ON UBUNTUSERVER\nERROR: {e}'''
+        requests.post(discord_error_webhook, json={"content": error_msg})
         errors_since_last_success += 1
         if errors_since_last_success >= 11:
             subprocess.run(["systemctl", "stop", "adsbtracker"])
-            requests.post(discord_error_webhook, json={"content" : """
-            
-            CRITICAL ERROR HAS OCCURRED. PROGRAM HAS BEEN STOPPED AND WILL NEED TO MANUALLY BE RESTARTED.
-            
-            """})
-            
-    
+            requests.post(discord_error_webhook, json={"content": "CRITICAL ERROR HAS OCCURRED. PROGRAM HAS BEEN STOPPED AND WILL NEED TO MANUALLY BE RESTARTED."})
