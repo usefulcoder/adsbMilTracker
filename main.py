@@ -106,11 +106,12 @@ while True:
             if seen not in hex_list:
                 plane = aircraft_db[seen]
                 already_seen.remove(seen)
-                message = f'''AIRCRAFT LOST\nMODEL: {plane["name"].replace(" ", "")}\nHEX: {seen}\nREG: {plane["registration"]}'''
-                send_interface_message(message)
                 send_discord_message("MILITARY PLANE RECEPTION LOST",
                                      f'''HEX -> {seen}\nREG -> {plane["registration"]}\nSHORTNAME -> {plane["shortName"]}\nMODEL -> {plane["name"]}''',
                                      "16711680")
+                if interface:
+                    message = f'AIRCRAFT LOST\nMODEL: {plane["name"]}\nHEX: {seen}\nREG: {plane["registration"]}'
+                    send_interface_message(message)
 
         time.sleep(5)
 
