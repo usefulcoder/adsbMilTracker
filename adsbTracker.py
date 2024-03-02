@@ -1,7 +1,7 @@
 import json
 import requests
 import time
-from datetime import datetime
+import datetime
 import subprocess
 import os
 from configuration import meshtastic_channel_index, discord_webhook, discord_error_webhook
@@ -210,22 +210,34 @@ MODEL: {name}\n
                         time.sleep(1)
 
         time.sleep(5)
-        if datetime.now().strftime("%H:%M") == "22:00" and not sent_daily:
-            send_message = requests.post(discord_webhook, json={"embeds" : [
-                {
-                    "title" : "DAILY MILITARY PLANE COUNT",
-                    "description" : f'''
-                    There were {len(daily_hex)} unique military aircraft seen today.
-                ''',
-                    "color" : "6750003"
-                }
-                   ]})
+
+        start_time = datetime.time(22,0,0)
+        end_time = datetime.time(22,15,0)
+        if start_time <= datetime.datetime.now().time() <= end_time and not sent_daily:
+            try:
+                send_message = requests.post(discord_webhook, json={"embeds" : [
+                    {
+                        "title" : "DAILY MILITARY PLANE COUNT",
+                        "description" : f'''
+                        There were {len(daily_hex)} unique military aircraft seen today.
+                    ''',
+                        "color" : "6750003"
+                    }
+                    ]})
+            except:
+                None
+
+            if interface:
+                message = f"DAILY MILITARY PLANE COUNT: {len(daily_hex)}"
+                interface.sendText(message, channelIndex=meshtastic_channel_index)
+                
             daily_hex = []
             sent_daily = True
+
         errors_since_last_success = 0
         
-        if datetime.now().strftime("%H:%M") != "22:00" and sent_daily:
-            sent_daily == False
+        if datetime.datetime.now().time() > end_time and sent_daily:
+            sent_daily = False
     except Exception as e:
         error_msg = f"""
         ...AN ERROR OCCURRED WITHIN THE ADSBTRACKER ON UBUNTUSERVER...
