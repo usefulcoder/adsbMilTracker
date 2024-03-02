@@ -17,7 +17,7 @@ sudo apt update && sudo apt upgrade
 ```
     wget -O piaware.deb http://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb
 ```
-
+ 
 3. DPKG piaware repo
 ```
     sudo dpkg -i piaware.deb
