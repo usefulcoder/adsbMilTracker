@@ -121,7 +121,7 @@ while True:
                 send_interface_message(message)
             
             frequency_data = {}
-            with open("/run/dump1090-fa/frequency.json", "r") as freq_file:
+            with open("/run/dump1090-fa/frequency.json") as freq_file:
                 frequency_data = json.load(freq_file)
                 freq_file.close()
             with open("/run/dump1090-fa/frequency.json", "w") as freq_file:
