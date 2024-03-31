@@ -127,6 +127,7 @@ while True:
             with open("/run/dump1090-fa/frequency.json", "w") as freq_file:
                 updated_frequency_data = frequency_data[datetime.datetime.today().strftime("%m/%d/%y")] = daily_hex
                 file.write(json.dumps(updated_frequency_data))
+                freq_file.close()
             daily_hex = {}
             sent_daily = True
 
