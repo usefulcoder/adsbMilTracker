@@ -4,8 +4,9 @@ import time
 import datetime
 import subprocess
 import os
+import inspect
 from configuration import meshtastic_channel_index, discord_webhook, discord_error_webhook
-import meshtastic
+import meshtastic 
 import meshtastic.serial_interface
 
 try:    
@@ -15,7 +16,8 @@ except:
 
 aircraft_db = {}
 
-with open(f"{os.getenv('HOME')}/adsbMilTracker/aircraft.json") as aircraft_file:
+script_directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) 
+with open(f"{script_directory}/aircraft.json") as aircraft_file:
     aircraft_db = json.load(aircraft_file)
 
 flag_dict = {
@@ -25,7 +27,7 @@ flag_dict = {
     "8": "LADD Aircraft Received!"
 }
 already_seen = ["AE0406"]
-daily_hex = []
+daily_hex = {}
 sent_daily = False
 
 def send_discord_message(title, description, color):
@@ -67,40 +69,29 @@ while True:
     try:
         try:
             json_data = requests.get("http://localhost/tar1090/data/aircraft.json").json()
+            
         except Exception:
             continue
 
         hex_list = [item["hex"].upper() for item in json_data["aircraft"]]
 
-        for airframe in json_data["aircraft"]:
-            hasLat = False
+        for airframe in json_data["aircraft"]:        
+            
             try:
-                if airframe["lat"]:
-                    hasLat = True
+              
+                plane = aircraft_db[airframe["hex"].upper()]
+                
+                if plane["code"] == "10" and airframe["hex"].upper() not in already_seen:
+                    mil_plane_found(plane, airframe["hex"].upper())
+                    already_seen.append(airframe["hex"].upper())
+                    if airframe["hex"].upper() not in daily_hex:
+                        daily_hex[airframe["hex"].upper()] = 1
+                        print(daily_hex)
+                    else:
+                        daily_hex[airframe["hex"].upper()] += 1
+                        print(daily_hex)
             except:
                 pass
-
-            if hasLat:
-                if type(float(airframe["lat"])) != float:
-                    try:
-                        plane = aircraft_db[airframe["hex"].upper()]
-                        if plane["code"] == "10" and airframe["hex"].upper() not in already_seen:
-                            mil_plane_found(plane, airframe["hex"].upper())
-                            already_seen.append(airframe["hex"].upper())
-                            if airframe["hex"].upper() not in daily_hex:
-                                daily_hex.append(airframe["hex"].upper())
-                    except:
-                        pass
-            else:
-                try:
-                    plane = aircraft_db[airframe["hex"].upper()]
-                    if plane["code"] == "10" and airframe["hex"].upper() not in already_seen:
-                        mil_plane_found(plane, airframe["hex"].upper())
-                        already_seen.append(airframe["hex"].upper())
-                        if airframe["hex"].upper() not in daily_hex:
-                            daily_hex.append(airframe["hex"].upper())
-                except:
-                    pass
 
         for seen in already_seen[:]:
             if seen not in hex_list:
@@ -120,16 +111,16 @@ while True:
         if start_time <= datetime.datetime.now().time() <= end_time and not sent_daily:
             try:
                 send_discord_message("DAILY MILITARY PLANE COUNT",
-                                     f'''There were {len(daily_hex)} unique military aircraft seen today.''',
+                                     f'''There were {len(dict.keys(daily_hex))} unique military aircraft seen today.''',
                                      "6750003")
             except:
                 pass
 
             if interface:
-                message = f"DAILY MILITARY PLANE COUNT: {len(daily_hex)}"
+                message = f"DAILY MILITARY PLANE COUNT: {len(dict.keys(daily_hex))}"
                 send_interface_message(message)
                 
-            daily_hex = []
+            daily_hex = {}
             sent_daily = True
 
         errors_since_last_success = 0
