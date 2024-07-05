@@ -116,15 +116,17 @@ while True:
             except:
                 pass
 
+                .
+
             if interface:
                 message = f"DAILY MILITARY PLANE COUNT: {len(dict.keys(daily_hex))}"
                 send_interface_message(message)
             
             frequency_data = {}
-            with open("/run/dump1090-fa/frequency.json") as freq_file:
+            with open("/home/anon/adsbMilTracker/data/frequency.json") as freq_file:
                 frequency_data = json.load(freq_file)
                 freq_file.close()
-            with open("/run/dump1090-fa/frequency.json", "w") as freq_file:
+            with open("/home/anon/adsbMilTracker/data/frequency.json", "w") as freq_file:
                 frequency_data[datetime.datetime.today().strftime("%m/%d/%y")] = daily_hex
                 freq_file.write(json.dumps(frequency_data))
                 freq_file.close()
